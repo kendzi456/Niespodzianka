@@ -13,10 +13,11 @@
             align-items: center;
             min-height: 100vh; /* Zmiana z height na min-height */
             margin: 0;
-            /* Zmiana z hidden na auto, żeby można było przewijać jak przycisk urośnie */
-            overflow: auto; 
+            /* Zmiana z hidden na auto, żeby można było przewijać na telefonie jak przycisk urośnie */
+            overflow-y: auto; 
+            overflow-x: hidden;
             text-align: center;
-            padding: 20px; /* Dodatkowy odstęp od krawędzi telefonu */
+            padding: 20px; /* Margines wewnętrzny dla telefonów */
             box-sizing: border-box;
         }
 
@@ -28,14 +29,14 @@
 
         h1 {
             color: #d81b60;
-            font-size: 2rem; /* Trochę mniejsza czcionka startowa dla mobile */
+            font-size: 2rem;
             margin-bottom: 20px;
             line-height: 1.3;
         }
 
         .gif-container img {
-            width: 100%; /* Obrazek skaluje się do szerokości ekranu */
-            max-width: 250px;
+            width: 100%;
+            max-width: 300px;
             height: auto;
             border-radius: 15px;
             margin-bottom: 20px;
@@ -45,10 +46,10 @@
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
             align-items: center;
-            flex-wrap: wrap; /* Pozwala przyciskom spaść jeden pod drugi */
-            min-height: 100px; /* Rezerwuje miejsce żeby nie skakało */
+            flex-wrap: wrap;
+            transition: all 0.3s ease;
         }
 
         button {
@@ -58,22 +59,22 @@
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            white-space: nowrap; /* Tekst nie będzie się łamał w przycisku */
+            white-space: nowrap; /* Zapobiega łamaniu tekstu w przycisku */
         }
 
         #yesBtn {
-            background-color: #4caf50;
+            background-color: #4caf50; /* Zielony */
             color: white;
             font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            z-index: 10; /* Zawsze nad innymi elementami */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10; /* Zawsze na wierzchu */
         }
 
         #noBtn {
-            background-color: #f44336;
+            background-color: #f44336; /* Czerwony */
             color: white;
             font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         /* Ukryty ekran sukcesu */
@@ -81,14 +82,32 @@
             display: none;
         }
 
-        /* Media queries dla lepszego wyglądu na telefonach */
+        /* --- Style specyficzne dla telefonów --- */
         @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8rem;
+            .buttons {
+                flex-direction: column; /* Układ pionowy przycisków */
+                gap: 15px;
             }
+            
+            /* Odwracamy kolejność, żeby rosnący przycisk TAK był na górze, 
+               a NIE zjeżdżało w dół, ale było dostępne */
+            .buttons {
+                flex-direction: column-reverse; 
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
             button {
-                padding: 12px 20px;
-                font-size: 1rem;
+                width: 100%; /* Przyciski na pełną szerokość na start */
+                max-width: 300px;
+            }
+            
+            /* Resetujemy szerokość dla przycisku TAK, żeby mógł rosnąć */
+            #yesBtn {
+                width: auto; 
+                max-width: none; 
             }
         }
     </style>
@@ -97,18 +116,18 @@
 
     <div class="container" id="question-screen">
         <div class="gif-container">
-            <img src="https://media1.tenor.com/m/7zKzuSaq0LEAAAAC/bears-cute.gif" alt="Cute Bear">
+            <img src="giphy.gif" alt="Cute Valentine GIF">
         </div>
         <h1>Zostaniesz moją Walentynką? 💖</h1>
         <div class="buttons">
-            <button id="yesBtn" onclick="acceptLove()">TAK!</button>
             <button id="noBtn" onclick="rejectLove()">Nie :(</button>
+            <button id="yesBtn" onclick="acceptLove()">TAK!</button>
         </div>
     </div>
 
     <div class="container" id="success-screen">
         <div class="gif-container">
-            <img src="https://media1.tenor.com/m/kPFVq1r0Ff4AAAAC/love-hearts.gif" alt="Happy Bear">
+            <img src="pengu.gif" alt="Happy Valentine GIF">
         </div>
         <h1>Wiedziałem! Do zobaczenia! 🥰</h1>
     </div>
@@ -118,10 +137,10 @@
         const noTexts = [
             "Na pewno?", 
             "Jesteś pewna?", 
-            "Pomyśl jeszcze raz!", 
+            "Czyli nie jedziemy na Cypr?", 
             "Złamiesz mi serce...", 
             "Będzie mi smutno!", 
-            "Płaczę...", 
+            "Co z tym Gdańskiem?", 
             "Ok, rozumiem...", 
             "Żartowałem, klikaj TAK!", 
             "Proszęęęęę!", 
@@ -137,26 +156,34 @@
                 noBtn.innerText = noTexts[noClickCount];
             } else {
                 noBtn.innerText = "Nie ma wyjścia!";
+                // Opcjonalnie: ukryj przycisk NIE po wyczerpaniu tekstów, jeśli chcesz wymusić kliknięcie
+                // noBtn.style.display = 'none'; 
             }
 
             // Powiększanie przycisku "Tak"
             const yesBtn = document.getElementById("yesBtn");
             
-            // Pobieramy aktualne style
-            const currentFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            // Pobieramy aktualny styl
+            const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
             const currentPaddingTop = parseFloat(window.getComputedStyle(yesBtn).paddingTop);
             const currentPaddingRight = parseFloat(window.getComputedStyle(yesBtn).paddingRight);
             
-            // ZMIEJSZYŁEM MNOŻNIK Z 1.5 NA 1.3 - żeby wolniej rosło na telefonie
-            const growthFactor = 1.3;
+            // Zmniejszony mnożnik dla lepszej kontroli na mobile (1.3 zamiast 1.5)
+            const multiplier = 1.3;
 
-            yesBtn.style.fontSize = `${currentFontSize * growthFactor}px`;
-            yesBtn.style.padding = `${currentPaddingTop * growthFactor}px ${currentPaddingRight * growthFactor}px`;
+            yesBtn.style.fontSize = `${currentSize * multiplier}px`;
+            yesBtn.style.padding = `${currentPaddingTop * multiplier}px ${currentPaddingRight * multiplier}px`;
+            
+            // Dodajemy logikę: jeśli przycisk jest ogromny, wyśrodkuj go bardziej agresywnie
+            // lub zmuś użytkownika do przewinięcia (dzięki overflow: auto w body)
         }
 
         function acceptLove() {
             document.getElementById("question-screen").style.display = "none";
             document.getElementById("success-screen").style.display = "block";
+            
+            // Konfetti (opcjonalny efekt - wymagałby dodatkowej biblioteki, ale prosty alert też działa)
+            // alert("Jeee! ❤️");
         }
     </script>
 </body>
