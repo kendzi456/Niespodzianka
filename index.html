@@ -11,34 +11,44 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh; /* Zmiana z height na min-height */
             margin: 0;
-            overflow: hidden;
+            /* Zmiana z hidden na auto, żeby można było przewijać jak przycisk urośnie */
+            overflow: auto; 
             text-align: center;
+            padding: 20px; /* Dodatkowy odstęp od krawędzi telefonu */
+            box-sizing: border-box;
         }
 
         .container {
             position: relative;
+            width: 100%;
+            max-width: 600px;
         }
 
         h1 {
             color: #d81b60;
-            font-size: 2.5rem;
+            font-size: 2rem; /* Trochę mniejsza czcionka startowa dla mobile */
             margin-bottom: 20px;
+            line-height: 1.3;
         }
 
         .gif-container img {
-            max-width: 300px;
+            width: 100%; /* Obrazek skaluje się do szerokości ekranu */
+            max-width: 250px;
+            height: auto;
             border-radius: 15px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* Pozwala przyciskom spaść jeden pod drugi */
+            min-height: 100px; /* Rezerwuje miejsce żeby nie skakało */
         }
 
         button {
@@ -48,23 +58,38 @@
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
+            white-space: nowrap; /* Tekst nie będzie się łamał w przycisku */
         }
 
         #yesBtn {
-            background-color: #4caf50; /* Zielony */
+            background-color: #4caf50;
             color: white;
             font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 10; /* Zawsze nad innymi elementami */
         }
 
         #noBtn {
-            background-color: #f44336; /* Czerwony */
+            background-color: #f44336;
             color: white;
             font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
 
         /* Ukryty ekran sukcesu */
         #success-screen {
             display: none;
+        }
+
+        /* Media queries dla lepszego wyglądu na telefonach */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            button {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -72,7 +97,7 @@
 
     <div class="container" id="question-screen">
         <div class="gif-container">
-            <img src="giphy.gif" alt="">
+            <img src="https://media1.tenor.com/m/7zKzuSaq0LEAAAAC/bears-cute.gif" alt="Cute Bear">
         </div>
         <h1>Zostaniesz moją Walentynką? 💖</h1>
         <div class="buttons">
@@ -83,7 +108,7 @@
 
     <div class="container" id="success-screen">
         <div class="gif-container">
-            <img src="pengu.gif" alt="">
+            <img src="https://media1.tenor.com/m/kPFVq1r0Ff4AAAAC/love-hearts.gif" alt="Happy Bear">
         </div>
         <h1>Wiedziałem! Do zobaczenia! 🥰</h1>
     </div>
@@ -93,10 +118,10 @@
         const noTexts = [
             "Na pewno?", 
             "Jesteś pewna?", 
-            "Czyli nie jedziemy na Cypr?", 
+            "Pomyśl jeszcze raz!", 
             "Złamiesz mi serce...", 
             "Będzie mi smutno!", 
-            "Co z tym Gdańskiem?", 
+            "Płaczę...", 
             "Ok, rozumiem...", 
             "Żartowałem, klikaj TAK!", 
             "Proszęęęęę!", 
@@ -116,11 +141,17 @@
 
             // Powiększanie przycisku "Tak"
             const yesBtn = document.getElementById("yesBtn");
-            const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-            const currentPadding = parseFloat(window.getComputedStyle(yesBtn).padding);
             
-            yesBtn.style.fontSize = `${currentSize * 1.5}px`;
-            yesBtn.style.padding = `${currentPadding * 1.2}px ${currentPadding * 1.5}px`;
+            // Pobieramy aktualne style
+            const currentFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            const currentPaddingTop = parseFloat(window.getComputedStyle(yesBtn).paddingTop);
+            const currentPaddingRight = parseFloat(window.getComputedStyle(yesBtn).paddingRight);
+            
+            // ZMIEJSZYŁEM MNOŻNIK Z 1.5 NA 1.3 - żeby wolniej rosło na telefonie
+            const growthFactor = 1.3;
+
+            yesBtn.style.fontSize = `${currentFontSize * growthFactor}px`;
+            yesBtn.style.padding = `${currentPaddingTop * growthFactor}px ${currentPaddingRight * growthFactor}px`;
         }
 
         function acceptLove() {
@@ -129,7 +160,4 @@
         }
     </script>
 </body>
-
 </html>
-
-
