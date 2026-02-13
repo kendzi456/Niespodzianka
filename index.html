@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zostaniesz moją Walentynką?</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fce4ec; /* Jasny róż */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .container {
+            position: relative;
+        }
+
+        h1 {
+            color: #d81b60;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .gif-container img {
+            max-width: 300px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #yesBtn {
+            background-color: #4caf50; /* Zielony */
+            color: white;
+            font-weight: bold;
+        }
+
+        #noBtn {
+            background-color: #f44336; /* Czerwony */
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Ukryty ekran sukcesu */
+        #success-screen {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="question-screen">
+        <div class="gif-container">
+            <img src="https://media1.tenor.com/m/7zKzuSaq0LEAAAAC/bears-cute.gif" alt="Cute Bear">
+        </div>
+        <h1>Zostaniesz moją Walentynką? 💖</h1>
+        <div class="buttons">
+            <button id="yesBtn" onclick="acceptLove()">TAK!</button>
+            <button id="noBtn" onclick="rejectLove()">Nie :(</button>
+        </div>
+    </div>
+
+    <div class="container" id="success-screen">
+        <div class="gif-container">
+            <img src="https://media1.tenor.com/m/kPFVq1r0Ff4AAAAC/love-hearts.gif" alt="Happy Bear">
+        </div>
+        <h1>Wiedziałem! Do zobaczenia! 🥰</h1>
+    </div>
+
+    <script>
+        let noClickCount = 0;
+        const noTexts = [
+            "Na pewno?", 
+            "Jesteś pewna?", 
+            "Pomyśl jeszcze raz!", 
+            "Złamię Ci serce...", 
+            "Będzie mi smutno!", 
+            "Płaczę...", 
+            "Ok, rozumiem...", 
+            "Żartowałem, klikaj TAK!", 
+            "Proszęęęęę!", 
+            "Daj spokój, to tylko jeden przycisk"
+        ];
+
+        function rejectLove() {
+            noClickCount++;
+            
+            // Zmiana tekstu na przycisku "Nie"
+            const noBtn = document.getElementById("noBtn");
+            if (noClickCount < noTexts.length) {
+                noBtn.innerText = noTexts[noClickCount];
+            } else {
+                noBtn.innerText = "Nie ma wyjścia!";
+            }
+
+            // Powiększanie przycisku "Tak"
+            const yesBtn = document.getElementById("yesBtn");
+            const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            const currentPadding = parseFloat(window.getComputedStyle(yesBtn).padding);
+            
+            yesBtn.style.fontSize = `${currentSize * 1.5}px`;
+            yesBtn.style.padding = `${currentPadding * 1.2}px ${currentPadding * 1.5}px`;
+        }
+
+        function acceptLove() {
+            document.getElementById("question-screen").style.display = "none";
+            document.getElementById("success-screen").style.display = "block";
+        }
+    </script>
+</body>
+</html>
